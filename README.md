@@ -68,6 +68,17 @@ This client-side static web application can be deployed directly to Vercel:
 
 ---
 
+## Future Enhancements & Advanced Real-World Features
+
+To elevate the password generator into a specialized developers' and security professionals' utility, the following advanced features are planned:
+
+*   **API Key & Hash Secret Presets**: Add generation modes for formatting Hex strings, Base64 strings, or SSH keys required by developer workflows.
+    *   *Real-Life Example*: A developer setting up local environment variables (`.env`) generates a 256-bit Hex key to use as a JWT secret for signing browser cookies securely.
+*   **Dictionary Attack Time-to-Crack Estimator**: Integrate standard cracking metrics (like `zxcvbn`) to display how long it would take for a standard GPU rig to brute force the generated password.
+    *   *Real-Life Example*: A user sees that although their password is 10 characters, it consists only of simple lowercase letters and would be cracked in 2 hours, prompting them to increase length.
+*   **Diceware & Pronounceable Passphrases**: Support generating secure passwords by combining random syllables or Diceware dictionary lists that are easy for humans to pronounce or dictate over the phone.
+    *   *Real-Life Example*: A system administrator generates a secure temporary password for a remote employee that is phonetically readable (e.g. `tor-mac-lin-fas`) for ease of communication.
+
 ## Submission Details
 *   **Developer**: Phulkeshwar Mahto
 *   **Email**: [phulkeshwarmahto@gmail.com](mailto:phulkeshwarmahto@gmail.com)
