@@ -504,7 +504,8 @@ export default function App() {
       {/* HEADER */}
       <header>
         <div className="logo">
-          <span>🔒 CryptPass</span>
+          <img src="/favicon-96x96.png" alt="Logo" style={{ width: '24px', height: '24px', borderRadius: '4px' }} />
+          <span>CryptPass</span>
           <span className="logo-badge">PRO</span>
         </div>
 
