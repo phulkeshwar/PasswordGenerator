@@ -391,6 +391,20 @@ export default function App() {
     });
   };
 
+  const handleDownload = () => {
+    if (passwords.length === 0) return;
+    const txt = passwords.join('\n');
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = passwords.length === 1 ? 'password.txt' : 'passwords.txt';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   // Math Strength & Entropy Estimator
   const calculateEntropy = (): { entropy: number; strength: StrengthLabel; color: string } => {
     if (mode === 'dev') {
@@ -797,11 +811,14 @@ export default function App() {
           <div className="card">
             <div className="card-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span>🔑 Generated Token</span>
-              {passwords.length > 1 && (
-                <button type="button" className="clear-btn" onClick={handleCopyAll} style={{ color: 'var(--accent)' }}>
-                  {copyAllText}
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button type="button" className="clear-btn" onClick={handleCopyAll} style={{ color: 'var(--accent)', cursor: 'pointer', background: 'none', border: 'none', font: 'inherit' }}>
+                  {passwords.length > 1 ? copyAllText : '⎘ Copy'}
                 </button>
-              )}
+                <button type="button" className="clear-btn" onClick={handleDownload} style={{ color: 'var(--accent)', cursor: 'pointer', background: 'none', border: 'none', font: 'inherit' }}>
+                  💾 Download
+                </button>
+              </div>
             </div>
 
             <div className="output-list">
