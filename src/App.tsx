@@ -75,6 +75,16 @@ export default function App() {
   const [copiedStates, setCopiedStates] = useState<{ [key: number]: boolean }>({});
   const [copyAllText, setCopyAllText] = useState<string>('⎘ Copy All');
 
+  // Custom Word Controls
+  const [customWord, setCustomWord] = useState<string>('');
+  const [customWordPos, setCustomWordPos] = useState<'start' | 'end' | 'random'>('random');
+
+  // FAQ Active Accordion
+  const [faqActive, setFaqActive] = useState<number | null>(null);
+  const toggleFaq = (index: number) => {
+    setFaqActive(faqActive === index ? null : index);
+  };
+
   // History Log
   const [history, setHistory] = useState<HistoryItem[]>([]);
 
@@ -88,6 +98,61 @@ export default function App() {
         // ignore
       }
     }
+  }, []);
+
+  // Dynamic FAQ JSON-LD Injection for deep SEO
+  useEffect(() => {
+    const faqSchema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is my custom word or password transmitted to any server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. CryptPass runs entirely inside your browser's local sandbox using the W3C Web Cryptography API (CSPRNG). No passwords, custom words, or parameters are sent over the network."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does adding a custom word affect my password strength?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Including a custom word increases password memorability but may lower total entropy compared to pure random keys, unless the custom word itself is highly complex. Position randomization helps prevent basic dictionary attacks."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between entropy and character length?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Length is the number of characters, while entropy (measured in bits) represents the mathematical complexity. Higher entropy means more guesses are required to crack the key using brute-force search."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are pronounceable phonetic syllables?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Syllable-based passphrases combine vowel-consonant blocks (like 'bafidu') to make passwords easy to pronounce and remember while remaining highly secure against automated crackers."
+          }
+        }
+      ]
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'faq-jsonld';
+    script.innerHTML = JSON.stringify(faqSchema);
+    document.head.appendChild(script);
+
+    return () => {
+      const existingScript = document.getElementById('faq-jsonld');
+      if (existingScript) {
+        existingScript.remove();
+      }
+    };
   }, []);
 
   // Secure Cryptographically Random number helper
@@ -178,6 +243,19 @@ export default function App() {
             words.push(sylWord);
           }
         }
+
+        // Inject custom word
+        if (customWord) {
+          if (customWordPos === 'start') {
+            words.unshift(customWord);
+          } else if (customWordPos === 'end') {
+            words.push(customWord);
+          } else {
+            const insertIdx = secureRandomInt(words.length + 1);
+            words.splice(insertIdx, 0, customWord);
+          }
+        }
+
         generated.push(words.join(activeSep));
       }
 
@@ -211,9 +289,20 @@ export default function App() {
     const generated: string[] = [];
     for (let q = 0; q < quantity; q++) {
       let pwd = '';
-      for (let l = 0; l < length; l++) {
+      const randomLength = Math.max(0, length - (customWord ? customWord.length : 0));
+      for (let l = 0; l < randomLength; l++) {
         const randIdx = secureRandomInt(charPool.length);
         pwd += charPool[randIdx];
+      }
+      if (customWord) {
+        if (customWordPos === 'start') {
+          pwd = customWord + pwd;
+        } else if (customWordPos === 'end') {
+          pwd = pwd + customWord;
+        } else {
+          const insertIdx = secureRandomInt(pwd.length + 1);
+          pwd = pwd.substring(0, insertIdx) + customWord + pwd.substring(insertIdx);
+        }
       }
       generated.push(pwd);
     }
@@ -233,6 +322,8 @@ export default function App() {
     passphraseSource,
     devPreset,
     quantity,
+    customWord,
+    customWordPos,
   ]);
 
   // Generate on load / trigger changes
@@ -620,6 +711,57 @@ export default function App() {
             </div>
           )}
 
+          {/* Custom Word Inclusion */}
+          {mode !== 'dev' && (
+            <div className="custom-word-section" style={{ borderTop: '1px solid var(--border)', paddingTop: '16px', marginTop: '16px', marginBottom: '16px' }}>
+              <div className="field-header">
+                <label htmlFor="customWord" style={{ fontSize: '0.85rem', color: 'var(--text-sec)', fontWeight: 600 }}>🔤 Include Custom Word</label>
+              </div>
+              <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
+                <input
+                  id="customWord"
+                  type="text"
+                  placeholder="e.g. Hero, Secure"
+                  value={customWord}
+                  onChange={(e) => setCustomWord(e.target.value.replace(/\s/g, ''))}
+                  style={{
+                    flex: 1,
+                    background: 'var(--bg)',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    padding: '10px 12px',
+                    color: 'var(--text)',
+                    fontFamily: 'inherit',
+                    fontSize: '0.88rem',
+                    outline: 'none'
+                  }}
+                />
+                <select
+                  value={customWordPos}
+                  onChange={(e) => setCustomWordPos(e.target.value as 'start' | 'end' | 'random')}
+                  style={{
+                    background: 'var(--bg)',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    padding: '10px',
+                    color: 'var(--text)',
+                    fontFamily: 'inherit',
+                    fontSize: '0.88rem',
+                    outline: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="random">At Random Position</option>
+                  <option value="start">At Start</option>
+                  <option value="end">At End</option>
+                </select>
+              </div>
+              <p style={{ fontSize: '0.72rem', color: 'var(--text-mute)', marginTop: '4px' }}>
+                Injects your custom word into the generated token. Spaces are auto-removed.
+              </p>
+            </div>
+          )}
+
           {/* Quantity Selector */}
           <div className="field">
             <div className="field-header">
@@ -710,7 +852,7 @@ export default function App() {
         )}
 
         {/* HISTORY PANEL */}
-        <div className="card">
+        <div className="card history-card-wrap">
           <div className="history-header">
             <div className="card-title" style={{ marginBottom: 0 }}>📜 Historical Log (Session Only)</div>
             {history.length > 0 && (
@@ -742,6 +884,46 @@ export default function App() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* FAQ SECTION */}
+        <div className="card faq-card">
+          <div className="card-title">❓ Frequently Asked Questions (FAQ)</div>
+          <div className="faq-list">
+            {[
+              {
+                q: "Is my custom word or password transmitted to any server?",
+                a: "No. CryptPass runs entirely inside your browser's local sandbox using the W3C Web Cryptography API (CSPRNG). No passwords, custom words, or parameters are sent over the network."
+              },
+              {
+                q: "How does adding a custom word affect my password strength?",
+                a: "Including a custom word increases password memorability but may lower total entropy compared to pure random keys, unless the custom word itself is highly complex. Position randomization helps prevent basic dictionary attacks."
+              },
+              {
+                q: "What is the difference between entropy and character length?",
+                a: "Length is the number of characters, while entropy (measured in bits) represents the mathematical complexity. Higher entropy means more guesses are required to crack the key using brute-force search."
+              },
+              {
+                q: "What are pronounceable phonetic syllables?",
+                a: "Syllable-based passphrases combine vowel-consonant blocks (like 'bafidu') to make passwords easy to pronounce and remember while remaining highly secure against automated crackers."
+              }
+            ].map((item, index) => (
+              <div key={index} className={`faq-item ${faqActive === index ? 'active' : ''}`}>
+                <button
+                  type="button"
+                  className="faq-question"
+                  onClick={() => toggleFaq(index)}
+                  aria-expanded={faqActive === index}
+                >
+                  <span>{item.q}</span>
+                  <span className="faq-icon">{faqActive === index ? '−' : '+'}</span>
+                </button>
+                <div className="faq-answer">
+                  <p>{item.a}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </main>
 
