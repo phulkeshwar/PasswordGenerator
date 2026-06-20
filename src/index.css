@@ -609,3 +609,34 @@ footer {
   border-radius: 6px;
   border: 1px solid rgba(239, 68, 68, 0.2);
 }
+
+/* ── ADVANCED DEVELOPER CONTROLS ── */
+.dev-presets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.crack-time-info {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 14px;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-left: 3px solid var(--accent);
+}
+
+.crack-time-lbl {
+  color: var(--text-sec);
+}
+
+.crack-time-val {
+  font-weight: 700;
+  color: var(--accent);
+}
+
