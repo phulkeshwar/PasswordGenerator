@@ -76,5 +76,5 @@ This client-side static web application can be deployed directly to Vercel:
 
 ## Submission Details
 *   **Developer**: Phulkeshwar Mahto
-*   **Email**: [phulkeshwarmahto@gmail.com](mailto:phulkeshwarmahto@gmail.com)
+*   **Email**: [phulkeshwar.e@gmail.com](mailto:phulkeshwar.e@gmail.com)
 *   **Organization**: Built for Digital Heroes ([https://digitalheroesco.com](https://digitalheroesco.com))
