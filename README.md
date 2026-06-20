@@ -1,73 +1,74 @@
-# React + TypeScript + Vite
+# CryptPass - Secure Password Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A free, cryptographically secure, client-side React TypeScript application for password generation. It operates entirely in the browser using the Web Crypto API, meaning no passwords ever leave your machine or get sent to a server.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1.  **Cryptographic Security**: Passwords are generated using the Web Crypto API's `window.crypto.getRandomValues()` method, ensuring high-entropy, mathematically unpredictable outcomes (strictly avoiding insecure pseudo-random generation like `Math.random()`).
+2.  **Flexible Form Modes**:
+    *   **Random Characters**: Configure length (8-128, default 16) and choose combinations of Uppercase (A-Z), Lowercase (a-z), Numbers (0-9), and Symbols (`!@#$%^&*...`).
+    *   **Memorable Passphrase**: Creates a memorable password using a list of 200 common English words, adjustable word counts (3 to 6 words), and custom separators (hyphen, dot, underscore, space, or none).
+3.  **Ambiguous Exclusions**: Optional filter to remove highly ambiguous character glyphs (`I, l, 1, O, 0, |`) from generated strings to prevent transcription errors.
+4.  **Math Entropy Meter**: Estimates password strength in bits of entropy using the formula:
+    $$\text{Entropy} = \text{length} \times \log_2(\text{pool\_size})$$
+    Strength is divided into:
+    *   **Weak**: <40 bits (Red bar)
+    *   **Fair**: 40-60 bits (Orange bar)
+    *   **Strong**: 60-80 bits (Yellow bar)
+    *   **Very Strong**: >80 bits (Green bar)
+5.  **Multi-Generation**: Select and generate 1, 5, 10, or 20 passwords at once.
+6.  **Action Controls**: Individual copy buttons for each password row, and a "Copy All" utility (newline-separated) for bulk operations.
+7.  **Tab Session History**: Retains the last 10 passwords generated during the active browser session in `sessionStorage` (cleared automatically when closing the browser tab).
+8.  **Keyboard Bindings**: Allows generating a new password instantly by pressing the Space or Enter key while focusing on the page.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Technical Details
 
-## Expanding the ESLint configuration
+*   **Framework**: [Vite](https://vite.dev/) + [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+*   **Cryptography**: Native Web Crypto API
+*   **Styling**: Pure CSS (featuring glowing cards, smooth color transitions, and custom sliders)
+*   **Fonts**: `Space Grotesk` loaded via Google Fonts.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Local Setup
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Prerequisites
+*   Node.js (v18+)
+*   npm or yarn
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Installation
+1. Navigate to the repository folder:
+   ```bash
+   cd Passwordgenerator
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run local dev server:
+   ```bash
+   npm run dev
+   ```
+4. Compile for production:
+   ```bash
+   npm run build
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Deployment
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+This client-side static web application can be deployed directly to Vercel:
+1. Log in to [Vercel](https://vercel.com).
+2. Click **Add New** → **Project**.
+3. Import your GitHub repository `PasswordGenerator`.
+4. Click **Deploy**.
+
+---
+
+## Submission Details
+*   **Developer**: Phulkeshwar Mahto
+*   **Email**: [phulkeshwarmahto@gmail.com](mailto:phulkeshwarmahto@gmail.com)
+*   **Organization**: Built for Digital Heroes ([https://digitalheroesco.com](https://digitalheroesco.com))
